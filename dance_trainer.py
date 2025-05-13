@@ -62,7 +62,19 @@ if video_path:
             clip = clip.fx(mp.vfx.speedx, factor=speed)
 
         out_path = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4").name
-        clip.write_videofile(out_path, audio=True, codec="libx264", verbose=False, logger=None)
+       # Resize video to a stable height (e.g., 480p) to avoid playback issues
+clip_resized = clip.resize(height=480)
+
+# Write the processed video with safe encoding settings
+clip_resized.write_videofile(
+    out_path,
+    codec="libx264",         # stable video codec
+    audio_codec="aac",       # audio support
+    preset="ultrafast",      # faster rendering
+    bitrate="500k",          # compressed output
+    verbose=False,
+    logger=None
+)
 
         st.success("🎥 Modified video is ready:")
         st.video(out_path)
@@ -82,3 +94,4 @@ if st.session_state.saved_links:
 
 #detta ska vara i powershell: streamlit run "C:\Users\AlexandraRosén\OneDrive - Triathlon Group\Desktop\test.py"
 #skriv cd.. om är i allbolah flik tex
+#detta ska vara i visual studo terminal streamlit run dance_trainer.py
