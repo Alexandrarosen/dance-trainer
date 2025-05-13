@@ -48,41 +48,40 @@ elif video_url:
 if video_path:
     st.video(video_path)
 
-    # 🟢 Define these first!
+    # ✅ Define these FIRST
     speed = st.slider("Playback speed", min_value=0.25, max_value=2.0, value=1.0, step=0.25)
     mirror = st.checkbox("Mirror video (flip horizontally)")
 
-# ✅ Then check and use them
-if mirror or speed != 1.0:
-    st.info("🔄 Processing video with effects...")
+    # ✅ THEN check and use them
+    if mirror or speed != 1.0:
+        st.info("🔄 Processing video with effects...")
 
-    try:
-        clip = mp.VideoFileClip(video_path)
+        try:
+            clip = mp.VideoFileClip(video_path)
 
-        if mirror:
-            clip = clip.fx(mp.vfx.mirror_x)
-        if speed != 1.0:
-            clip = clip.fx(mp.vfx.speedx, factor=speed)
+            if mirror:
+                clip = clip.fx(mp.vfx.mirror_x)
+            if speed != 1.0:
+                clip = clip.fx(mp.vfx.speedx, factor=speed)
 
-        out_path = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4").name
-        clip.write_videofile(
-            out_path,
-            codec="libx264",
-            audio_codec="aac",
-            preset="ultrafast",
-            bitrate="500k",
-            verbose=False,
-            logger=None
-        )
+            out_path = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4").name
+            clip.write_videofile(
+                out_path,
+                codec="libx264",
+                audio_codec="aac",
+                preset="ultrafast",
+                bitrate="500k",
+                verbose=False,
+                logger=None
+            )
 
-        st.success("🎥 Modified video is ready:")
-        st.video(out_path)
+            st.success("🎥 Modified video is ready:")
+            st.video(out_path)
 
-    except Exception as e:
-        st.error(f"⚠️ Video processing failed: {e}")
+        except Exception as e:
+            st.error(f"⚠️ Video processing failed: {e}")
 
-
-
+            
 
 # --- Save video links in session ---
 if "saved_links" not in st.session_state:
