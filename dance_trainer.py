@@ -51,9 +51,11 @@ if video_path:
     speed = st.slider("Playback speed", min_value=0.25, max_value=2.0, value=1.0, step=0.25)
     mirror = st.checkbox("Mirror video (flip horizontally)")
 
-    if mirror or speed != 1.0:
-        st.info("🔄 Processing video with effects...")
+    # --- Effects section ---
+if mirror or speed != 1.0:
+    st.info("🔄 Processing video with effects...")
 
+    try:
         clip = mp.VideoFileClip(video_path)
 
         if mirror:
@@ -61,9 +63,8 @@ if video_path:
         if speed != 1.0:
             clip = clip.fx(mp.vfx.speedx, factor=speed)
 
-        clip_resized = clip.resize(height=480)
         out_path = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4").name
-        clip_resized.write_videofile(
+        clip.write_videofile(
             out_path,
             codec="libx264",
             audio_codec="aac",
@@ -75,6 +76,10 @@ if video_path:
 
         st.success("🎥 Modified video is ready:")
         st.video(out_path)
+
+    except Exception as e:
+        st.error(f"⚠️ Video processing failed: {e}")
+
 
 
 
