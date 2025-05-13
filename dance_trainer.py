@@ -61,23 +61,22 @@ if video_path:
         if speed != 1.0:
             clip = clip.fx(mp.vfx.speedx, factor=speed)
 
+        clip_resized = clip.resize(height=480)
         out_path = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4").name
-       # Resize video to a stable height (e.g., 480p) to avoid playback issues
-clip_resized = clip.resize(height=480)
-
-# Write the processed video with safe encoding settings
-clip_resized.write_videofile(
-    out_path,
-    codec="libx264",         # stable video codec
-    audio_codec="aac",       # audio support
-    preset="ultrafast",      # faster rendering
-    bitrate="500k",          # compressed output
-    verbose=False,
-    logger=None
-)
+        clip_resized.write_videofile(
+            out_path,
+            codec="libx264",
+            audio_codec="aac",
+            preset="ultrafast",
+            bitrate="500k",
+            verbose=False,
+            logger=None
+        )
 
         st.success("🎥 Modified video is ready:")
         st.video(out_path)
+
+
 
 # --- Save video links in session ---
 if "saved_links" not in st.session_state:
